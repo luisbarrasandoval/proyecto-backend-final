@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { MidechileGuard } from 'src/midechile/midechile.guard';
 import { DevicesService } from './devices.service';
-import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @Controller('devices')
 export class DevicesController {
@@ -13,18 +12,20 @@ export class DevicesController {
     return this.devicesService.findAll(req.user);
   }
 
+  @Post('on')
+  @UseGuards(MidechileGuard)
+  on(@Param('id') id: string) {
+    return this.devicesService.on(id);
+  }
+
+  @Post('off')
+  @UseGuards(MidechileGuard)
+  off(@Param('id') id: string) {
+    return this.devicesService.off(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.devicesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDeviceDto: UpdateDeviceDto) {
-    return this.devicesService.update(+id, updateDeviceDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.devicesService.remove(+id);
   }
 }

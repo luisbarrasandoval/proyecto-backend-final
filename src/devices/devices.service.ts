@@ -63,11 +63,9 @@ export class DevicesService {
     return `This action returns a #${id} device`;
   }
 
-  async update(id: number, updateDeviceDto: UpdateDeviceDto) {
-    return `This action updates a #${id} device`;
+  async on(id: string) {
   }
 
-  async remove(id: number) {
-    return `This action removes a #${id} device`;
+  async off(id: string) {
   }
 }
