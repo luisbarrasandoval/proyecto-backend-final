@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-import { Grup, GrupSchema } from './grup.schema';
-import { User, UserSchema } from './user.schema';
+import { HydratedDocument } from 'mongoose';
+
 
 export type DevicesDocument = HydratedDocument<Devices>;
 
@@ -9,16 +8,16 @@ export type DevicesDocument = HydratedDocument<Devices>;
 export class Devices {
 
   @Prop({ required: true })
-  id: number;
+  idUser: number;
 
   @Prop({ required: true })
-  name: string;
+  idIntegration: number;
 
-  @Prop({ required: true, type: Types.ObjectId, ref: User.name, excludeIndexes: true })
-  user: User
+  @Prop({ required: true})
+  grupName: string
 
-  @Prop({ required: false,  type: GrupSchema })
-  grup: Grup
+  @Prop({ required: true })
+  order: number
 }
 
 export const DevicesSchema = SchemaFactory.createForClass(Devices);

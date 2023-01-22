@@ -23,9 +23,4 @@ export class DevicesController {
   off(@Param('id') id: string) {
     return this.devicesService.off(id);
   }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.devicesService.findOne(+id);
-  }
 }

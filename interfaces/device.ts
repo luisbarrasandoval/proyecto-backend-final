@@ -26,7 +26,10 @@ export interface Device {
   id: number;
   name: string;
   phone: string;
-  group: string;
+  group: {
+    name: string
+    order: number
+  }
   cmd: Cmd[]
   position: number[];
   sensors: Sensor[];

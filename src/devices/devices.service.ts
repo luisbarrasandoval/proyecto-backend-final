@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { group } from 'console';
 import { Model } from 'mongoose';
 import getDevices from 'src/midechile/getDevices';
 import { Devices, DevicesDocument } from 'src/schemas/devices.schema';
 import { User } from 'src/schemas/user.schema';
-import { UpdateDeviceDto } from './dto/update-device.dto';
 
 @Injectable()
 export class DevicesService {
@@ -15,52 +13,37 @@ export class DevicesService {
 
   async findAll(user: User) {
     const sid = user.eid;
-    const devices = await getDevices(sid);
+    const integrationDevices = await getDevices(sid);
+    const devices = await this.diviceModel.find({ idUser: user.id });
 
-    const allDevices = {};
-
-    for await (const device of devices) {
-      if (!device) {
-        continue;
-      }
-
-      const grupName = device.group || 'none';
-      const deviceDoc = await this.diviceModel.findOne({ id: device.id });
-
-      if (deviceDoc) {
-        try {
-          delete deviceDoc.user;
-        } catch (error) {
-          console.log(error);
+    for (const iDevices of integrationDevices) {
+      const device = devices.find((d) => d.idIntegration === iDevices.id);
+      if (device) {
+        iDevices.group = {
+          name: device.grupName,
+          order: device.order,
         }
-
-        if (allDevices[grupName]) {
-          allDevices[grupName].push(device);
-        } else {
-          allDevices[grupName] = [device];
-        }
-
-        continue;
-      }
-
-      const newDevice = new this.diviceModel({
-        ...device,
-        user,
-      });
-      await newDevice.save();
-      delete newDevice.user;
-      if (allDevices[grupName]) {
-        allDevices[grupName].push(device);
-      } else {
-        allDevices[grupName] = [device];
       }
     }
 
-    return allDevices;
-  }
+    const groups = integrationDevices.reduce((acc, {group, ...rest}) => {
+      let name, order
+      if (group) {
+        name = group.name
+        order = group.order
+      } else {
+        name = "Sin grupo",
+        order = 0
+      }
+      if(!acc[name]) {
+        acc[name] = [{...rest, group: name, order}];
+      } else {
+        acc[name].push({...rest, group: name, order});
+      }
+      return acc;
+    }, {});
 
-  async findOne(id: number) {
-    return `This action returns a #${id} device`;
+    return groups
   }
 
   async on(id: string) {

@@ -9,7 +9,6 @@ export class MidechileGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
 
     const { authorization } = context.switchToHttp().getRequest().headers
-    console.log(authorization)
     if (!authorization) {
       return false;
     }
@@ -19,7 +18,6 @@ export class MidechileGuard implements CanActivate {
     return getSession(token)
       .then(data => {
         context.switchToHttp().getRequest().user = data;
-        console.log(data)
         return true
       })
       .catch((e) => {
