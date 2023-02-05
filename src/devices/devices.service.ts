@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import getDevices from 'src/midechile/getDevices';
+import toogleDevices from 'src/midechile/toogleDevices';
 import { Devices, DevicesDocument } from 'src/schemas/devices.schema';
 import { User } from 'src/schemas/user.schema';
 
@@ -46,9 +47,34 @@ export class DevicesService {
     return groups
   }
 
-  async on(id: string) {
+  async on(id: string, user: User) {
+    const sid = user.eid;
+    const status = await toogleDevices({
+      sid,
+      id,
+      name: 'on rele',
+      param: '1',
+    })
+    return status
   }
 
-  async off(id: string) {
+  async off(id: string, user: User) {
+    const sid = user.eid;
+    const status = await toogleDevices({
+      sid,
+      id,
+      name: 'off rele',
+      param: '1',
+    })
+    return status
+  }
+
+  async toggle(id: string, user: User) {
+    const on = await this.on(id, user);
+    await (async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    })();
+    const off = await this.off(id, user);
+    return {on, off}
   }
 }

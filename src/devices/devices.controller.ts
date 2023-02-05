@@ -14,13 +14,19 @@ export class DevicesController {
 
   @Post('on')
   @UseGuards(MidechileGuard)
-  on(@Param('id') id: string) {
-    return this.devicesService.on(id);
+  on(@Body('id') id: string, @Req() req) {
+    return this.devicesService.on(id, req.user);
   }
 
   @Post('off')
   @UseGuards(MidechileGuard)
-  off(@Param('id') id: string) {
-    return this.devicesService.off(id);
+  off(@Body('id') id: string, @Req() req) {
+    return this.devicesService.off(id, req.user);
+  }
+
+  @Post('toggle')
+  @UseGuards(MidechileGuard)
+  toggle(@Body('id') id: string, @Req() req) {
+    return this.devicesService.toggle(id, req.user);
   }
 }
