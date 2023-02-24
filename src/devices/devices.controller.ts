@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
 import { MidechileGuard } from 'src/midechile/midechile.guard';
 import { DevicesService } from './devices.service';
+import { NewGrup } from './dto/new-grup.dto';
+ 
 
 @Controller('devices')
 export class DevicesController {
@@ -16,6 +18,12 @@ export class DevicesController {
   @UseGuards(MidechileGuard)
   on(@Body('id') id: string, @Req() req) {
     return this.devicesService.on(id, req.user);
+  }
+
+  @Post('addGroup')
+  @UseGuards(MidechileGuard)
+  addGroup(@Body() data: NewGrup, @Req() req) {
+    return this.devicesService.addGroup(data, req.user);
   }
 
   @Post('off')

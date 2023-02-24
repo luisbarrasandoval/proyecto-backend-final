@@ -5,6 +5,7 @@ import getDevices from 'src/midechile/getDevices';
 import toogleDevices from 'src/midechile/toogleDevices';
 import { Devices, DevicesDocument } from 'src/schemas/devices.schema';
 import { User } from 'src/schemas/user.schema';
+import { NewGrup } from './dto/new-grup.dto';
 
 @Injectable()
 export class DevicesService {
@@ -76,5 +77,24 @@ export class DevicesService {
     })();
     const off = await this.off(id, user);
     return {on, off}
+  }
+
+
+  async addGroup(data: NewGrup, user: User) {
+    const payload = {
+      idUser: user.id,
+      order: 10000000,
+      grupName: data.name,
+      idIntegration: data.id,
+    }
+
+    const device = await this.diviceModel.findOne({ idIntegration: data.id });
+    if (device) {
+      await this.diviceModel.findOneAndUpdate({ idIntegration: data.id }, payload);
+    } else {
+      await this.diviceModel.create(payload);
+    }
+
+    return {status: 'ok'}
   }
 }

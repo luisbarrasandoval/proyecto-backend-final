@@ -13,7 +13,7 @@ export class Devices {
   @Prop({ required: true })
   idIntegration: number;
 
-  @Prop({ required: true})
+  @Prop({ required: true}) // TODO: Crear un modelo para grupo
   grupName: string
 
   @Prop({ required: true })
