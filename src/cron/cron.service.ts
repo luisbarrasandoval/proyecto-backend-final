@@ -20,7 +20,7 @@ export class CronService {
 
     const newCron = new this.cronModel({
       ...createCronDto,
-      user,
+      user: user.id
     });
     return newCron.save();
   }

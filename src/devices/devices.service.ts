@@ -4,6 +4,8 @@ import { Model } from 'mongoose';
 import getDevices from 'src/midechile/getDevices';
 import toogleDevices from 'src/midechile/toogleDevices';
 import { Devices, DevicesDocument } from 'src/schemas/devices.schema';
+import { Grup, GrupDocument } from 'src/schemas/grup.scheme';
+
 import { User } from 'src/schemas/user.schema';
 import { NewGrup } from './dto/new-grup.dto';
 
@@ -11,12 +13,22 @@ import { NewGrup } from './dto/new-grup.dto';
 export class DevicesService {
   constructor(
     @InjectModel(Devices.name) private diviceModel: Model<DevicesDocument>,
+    @InjectModel(Grup.name) private grupModel: Model<GrupDocument>,
   ) {}
 
   async findAll(user: User) {
     const sid = user.eid;
     const integrationDevices = await getDevices(sid);
     const devices = await this.diviceModel.find({ idUser: user.id });
+    const grups = await this.grupModel.find({ idUser: user.id });
+
+    const extraGrups = grups.reduce((acc, curr) => {
+      const { name } = curr;
+      acc[name] = [];
+      return acc;
+    }, {});
+    
+    
 
     for (const iDevices of integrationDevices) {
       const device = devices.find((d) => d.idIntegration === iDevices.id);
@@ -45,7 +57,11 @@ export class DevicesService {
       return acc;
     }, {});
 
-    return groups
+    console.log(groups)
+    return {
+      ...extraGrups,
+      ...groups,
+    }
   }
 
   async on(id: string, user: User) {
@@ -86,6 +102,16 @@ export class DevicesService {
       order: 10000000,
       grupName: data.name,
       idIntegration: data.id,
+    }
+
+    const existGrup = await this.grupModel.findOne({
+      name: data.name
+    })
+    if (!existGrup) {
+      await this.grupModel.create({
+        idUser: user.id,
+        name: data.name
+      })
     }
 
     const device = await this.diviceModel.findOne({ idIntegration: data.id });
