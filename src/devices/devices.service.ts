@@ -57,7 +57,6 @@ export class DevicesService {
       return acc;
     }, {});
 
-    console.log(groups)
     return {
       ...extraGrups,
       ...groups,

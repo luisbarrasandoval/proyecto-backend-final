@@ -30,7 +30,7 @@ export class CronService {
     return data;
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     const data = this.cronModel.findById(id);
     return data;
   }
@@ -39,9 +39,10 @@ export class CronService {
     return `This action updates a #${id} cron`;
   }
 
-  remove(id: number) {
+  async remove(id: string) {
     try {
-      this.cronModel.findByIdAndDelete(id);
+      const item = await this.cronModel.findByIdAndDelete(id);
+      console.log(item);
       return 'ok';
     }
     catch (error) {

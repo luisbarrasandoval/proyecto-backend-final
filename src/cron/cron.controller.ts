@@ -23,7 +23,7 @@ export class CronController {
   @Get(':id')
   @UseGuards(MidechileGuard)
   findOne(@Param('id') id: string) {
-    return this.cronService.findOne(+id);
+    return this.cronService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,6 +35,6 @@ export class CronController {
   @Delete(':id')
   @UseGuards(MidechileGuard)
   remove(@Param('id') id: string) {
-    return this.cronService.remove(+id);
+    return this.cronService.remove(id);
   }
 }
